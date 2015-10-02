@@ -18,7 +18,11 @@ module HttpSignatures
       if header == REQUEST_TARGET
         request_target
       else
-        @message.fetch(header) { raise HeaderNotInMessage, header }
+        if @message.respond_to?(:headers)
+          @message.headers.fetch(header) { raise HeaderNotInMessage, header }
+        else
+          @message.fetch(header) { raise HeaderNotInMessage, header }
+        end
       end
     end
 
